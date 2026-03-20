@@ -1,0 +1,39 @@
+{
+  "name": "Noir",
+  "identifier": "noir",
+  "subtitle": "Noir app repository",
+  "description": "Noir app repository for eSign/AltStore-style clients.",
+  "website": "https://github.com/Talaxin/Noir",
+  "iconURL": "https://www.miruro.to/favicon.ico",
+  "tintColor": "#1a1a1a",
+  "featuredApps": [
+    "com.maxtori.noir"
+  ],
+  "apps": [
+    {
+      "name": "Noir",
+      "bundleIdentifier": "com.maxtori.noir",
+      "developerName": "Talaxin",
+      "subtitle": "Modular media player",
+      "localizedDescription": "Noir modular media player with external services.",
+      "version": "1.0.5",
+      "versionDate": "2026-03-19T00:00:00-04:00",
+      "versionDescription": "Updated modules and subtitles handling.",
+      "downloadURL": "https://github.com/Talaxin/Noir/raw/main/build/Noir.ipa",
+      "iconURL": "https://www.miruro.to/favicon.ico",
+      "tintColor": "#1a1a1a",
+      "category": "entertainment",
+      "versions": [
+        {
+          "version": "1.0.5",
+          "date": "2026-03-19T00:00:00-04:00",
+          "localizedDescription": "Updated modules and subtitles handling.",
+          "downloadURL": "https://github.com/Talaxin/Noir/raw/main/build/Noir.ipa",
+          "size": 20752565,
+          "minOSVersion": "15.0"
+        }
+      ]
+    }
+  ],
+  "news": []
+}

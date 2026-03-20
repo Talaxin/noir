@@ -1,0 +1,19 @@
+{
+  "sourceName": "Tokyo Insider",
+  "iconUrl": "https://www.tokyoinsider.com/img/tin.png",
+  "author": {
+    "name": "Noir",
+    "icon": "https://www.tokyoinsider.com/img/tin.png"
+  },
+  "version": "1.0.5",
+  "language": "English",
+  "streamType": "Direct",
+  "quality": "Various",
+  "baseUrl": "https://www.tokyoinsider.com/",
+  "searchBaseUrl": "https://www.tokyoinsider.com/anime/list",
+  "scriptUrl": "https://raw.githubusercontent.com/Talaxin/Noir/main/NoirServices/TokyoInsider/tokyoinsider.js",
+  "type": "anime",
+  "asyncJS": true,
+  "softsub": false,
+  "downloadSupport": true
+}
