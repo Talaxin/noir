@@ -16,20 +16,20 @@
       "developerName": "Talaxin",
       "subtitle": "Modular media player",
       "localizedDescription": "Noir modular media player with external services.",
-      "version": "1.0.13",
-      "versionDate": "2026-03-21T22:05:09-07:00",
-      "versionDescription": "Use no-prefetch subtitle master and HLS-only Miruro selection to avoid 4spromax/entry-fetch failures.",
+      "version": "1.0.14",
+      "versionDate": "2026-03-21T22:16:02-07:00",
+      "versionDescription": "Parser-aware HLS URI rewrite: only proxy expected URI lines to reduce bogus asset fetch stalls.",
       "downloadURL": "https://github.com/Talaxin/Noir/raw/main/build/Noir.ipa",
       "iconURL": "https://raw.githubusercontent.com/Talaxin/Noir/main/noir.png",
       "tintColor": "#1a1a1a",
       "category": "entertainment",
       "versions": [
         {
-          "version": "1.0.13",
-          "date": "2026-03-21T22:05:09-07:00",
-          "localizedDescription": "Use no-prefetch subtitle master and HLS-only Miruro selection to avoid 4spromax/entry-fetch failures.",
+          "version": "1.0.14",
+          "date": "2026-03-21T22:16:02-07:00",
+          "localizedDescription": "Parser-aware HLS URI rewrite: only proxy expected URI lines to reduce bogus asset fetch stalls.",
           "downloadURL": "https://github.com/Talaxin/Noir/raw/main/build/Noir.ipa",
-          "size": 24454923,
+          "size": 24454629,
           "minOSVersion": "15.0"
         }
       ]
