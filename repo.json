@@ -16,20 +16,20 @@
       "developerName": "Talaxin",
       "subtitle": "Modular media player",
       "localizedDescription": "Noir modular media player with external services.",
-      "version": "1.0.16",
-      "versionDate": "2026-03-22T09:53:09-07:00",
-      "versionDescription": "Fix Miruro startup/replay failures by adding explicit local proxy readiness handshake, waiting for listener readiness before serving, and removing unsafe warm-up fallback that caused NSURLError -1004 black-screen attempts.",
+      "version": "1.0.17",
+      "versionDate": "2026-03-22T11:05:09-07:00",
+      "versionDescription": "Fix Miruro in-app playback stalls by correcting proxy readiness probing and hardening stream proxy listener startup with real port-ready validation/retry to avoid address-in-use races.",
       "downloadURL": "https://github.com/Talaxin/Noir/raw/main/build/Noir.ipa",
       "iconURL": "https://raw.githubusercontent.com/Talaxin/Noir/main/noir.png",
       "tintColor": "#1a1a1a",
       "category": "entertainment",
       "versions": [
         {
-          "version": "1.0.16",
-          "date": "2026-03-22T09:53:09-07:00",
-          "localizedDescription": "Fix Miruro startup/replay failures by adding explicit local proxy readiness handshake, waiting for listener readiness before serving, and removing unsafe warm-up fallback that caused NSURLError -1004 black-screen attempts.",
+          "version": "1.0.17",
+          "date": "2026-03-22T11:05:09-07:00",
+          "localizedDescription": "Fix Miruro in-app playback stalls by correcting proxy readiness probing and hardening stream proxy listener startup with real port-ready validation/retry to avoid address-in-use races.",
           "downloadURL": "https://github.com/Talaxin/Noir/raw/main/build/Noir.ipa",
-          "size": 24457611,
+          "size": 24457583,
           "minOSVersion": "15.0"
         }
       ]
