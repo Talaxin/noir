@@ -11,6 +11,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import plistlib
+import zipfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -44,6 +46,26 @@ def ensure_file(path: Path, label: str) -> None:
         raise FileNotFoundError(f"{label} not found: {path}")
     if not path.is_file():
         raise FileNotFoundError(f"{label} is not a file: {path}")
+
+
+def read_ipa_versions(ipa_path: Path) -> tuple[str | None, str | None]:
+    with zipfile.ZipFile(ipa_path, "r") as zf:
+        info_name = next(
+            (
+                name
+                for name in zf.namelist()
+                if name.startswith("Payload/")
+                and name.endswith(".app/Info.plist")
+            ),
+            None,
+        )
+        if not info_name:
+            return (None, None)
+        with zf.open(info_name) as f:
+            info = plistlib.load(f)
+    short = info.get("CFBundleShortVersionString")
+    build = info.get("CFBundleVersion")
+    return (str(short) if short is not None else None, str(build) if build is not None else None)
 
 
 def main() -> int:
@@ -103,6 +125,7 @@ def main() -> int:
 
     now_iso = datetime.now().astimezone().replace(microsecond=0).isoformat()
     ipa_size = ipa_path.stat().st_size
+    ipa_short_version, ipa_build_version = read_ipa_versions(ipa_path)
 
     before_app_version = str(app.get("version", "0.0.0"))
     after_app_version = before_app_version
@@ -111,6 +134,12 @@ def main() -> int:
         after_app_version = bump_patch(before_app_version)
         app["version"] = after_app_version
         latest["version"] = bump_patch(str(latest.get("version", before_app_version)))
+        if ipa_short_version is not None and ipa_short_version != after_app_version:
+            raise ValueError(
+                "IPA internal version mismatch: "
+                f"CFBundleShortVersionString={ipa_short_version} but expected {after_app_version}. "
+                "Bump MARKETING_VERSION in Xcode project, rebuild IPA, then rerun release_esign.py."
+            )
 
     app["versionDate"] = now_iso
     app["versionDescription"] = args.description
@@ -145,6 +174,8 @@ def main() -> int:
     print(f"App version: {before_app_version} -> {after_app_version}")
     print(f"Timestamp: {now_iso}")
     print(f"IPA size: {ipa_size}")
+    if ipa_short_version or ipa_build_version:
+        print(f"IPA bundle versions: short={ipa_short_version or 'n/a'} build={ipa_build_version or 'n/a'}")
     if module_updates:
         print("Module versions:")
         for p, old_v, new_v in module_updates:
