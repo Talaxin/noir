@@ -138,10 +138,15 @@ async function extractStreamUrl(episodeIdOrUrl) {
         headers: streamHeaders
       };
     }).filter(function (s) { return s.streamUrl; });
-    // AnimeKai subtitle sidecar tracks can trigger aggressive retries in AVPlayer
-    // (repeated .vtt/.srt/.gif pulls) and cause stalls. Keep playback stable by
-    // not auto-attaching external subtitles here.
-    return JSON.stringify({ streams: streams, subtitles: "" });
+    var subtitleUrl = "";
+    var subList = json.subtitles || [];
+    for (var i = 0; i < subList.length; i++) {
+      if ((subList[i].lang || "").toLowerCase().indexOf("english") >= 0 && subList[i].url) {
+        subtitleUrl = subList[i].url;
+        break;
+      }
+    }
+    return JSON.stringify({ streams: streams, subtitles: subtitleUrl });
   } catch (err) {
     console.error("AnimeKai extractStreamUrl error:", err);
     return JSON.stringify({ streams: [], subtitles: "" });
