@@ -6,9 +6,14 @@ Use this exact runbook when releasing Noir from:
 ## Hard Rules
 - Single source of truth is the `Noir` directory above.
 - Git remote must be only: `https://github.com/Talaxin/Noir.git`
-- Every release increments versions by `+0.0.1` (patch bump).
 - Keep local files; do not delete unrelated local content.
 - Push only intended release artifacts and module files.
+
+### Only bump what you change (non-negotiable)
+- **Do not** bump `version` in a module manifest unless that module’s **`.json` or `.js`** changed in this release.
+- **Do not** bump `MARKETING_VERSION`, `repo.json`, or `build/Noir.ipa` unless you are shipping a **new app build** for eSign.
+- **New module:** add manifest + script with **`version": "1.0.0"`** and commit **only** those files (and any wiring you actually changed). Leave other modules, the Xcode marketing version, `repo.json`, and the IPA **unchanged** unless the user explicitly asked for an app release.
+- `release_esign.py --bump` increments **every path you pass to `--modules`**. Prefer **`--modules` with only the manifests that changed** instead of relying on defaults when the release is selective.
 
 ## Files That Matter
 - App project/version:
@@ -38,11 +43,10 @@ Use this exact runbook when releasing Noir from:
 4. Validate parsable metadata:
    - JSON and plist files must parse/lint cleanly.
 
-## Version Bump Rule
-- App + modules + repo metadata all bump patch by `+0.0.1`.
-- Example: `1.0.23 -> 1.0.24`.
-- Never skip bump for a release build.
-- **IPA must match `repo.json`:** Before `ipabuild.sh`, set `MARKETING_VERSION` in `Noir.xcodeproj/project.pbxproj` to the **same** version you will publish in `repo.json` (that value becomes `CFBundleShortVersionString` inside the IPA). If you only bump `repo.json` and not the Xcode project, eSign will show a new version but the installed app will still report the old one.
+## Version bump rule (app + eSign)
+- When you **are** shipping a new IPA: increment **`MARKETING_VERSION`** by **`+0.0.1`** (patch), rebuild the IPA, then align **`repo.json`** with that same version (via `release_esign.py` or careful manual edit). Example: `1.0.23 -> 1.0.24`.
+- **IPA must match `repo.json`:** `MARKETING_VERSION` becomes `CFBundleShortVersionString` inside the IPA. If you only bump `repo.json` and not the Xcode project, eSign will show a new version but the installed app will still report the old one.
+- Module manifest bumps are **independent**: only bump a module’s `version` when that module’s files changed; use **`release_esign.py --bump --modules ...`** to list **only** those JSON paths.
 
 ## Build IPA
 1. Run:
@@ -52,28 +56,30 @@ Use this exact runbook when releasing Noir from:
 3. Quick sanity:
    - file exists and has non-zero size.
 
-## Update repo.json and Module Versions
-Use the helper script after IPA is built:
+## Update repo.json (and optional module bumps)
+After a **new** IPA exists, refresh metadata. For a **full** app release you typically bump app version and only the module manifests you edited:
 
 ```bash
-python3 ./release_esign.py --bump --description "Describe the release briefly."
+python3 ./release_esign.py --bump \
+  --modules NoirServices/Miruro/miruro.json \
+  --description "Describe the release briefly."
 ```
 
-What this updates:
-- `repo.json` app version/date/description/size
-- `repo.json` latest `versions[0]` version/date/description/size
-- Module manifest versions:
-  - `NoirServices/Miruro/miruro.json`
-  - `NoirServices/AnimeKai/animekai.json`
-  - `NoirServices/TokyoInsider/tokyoinsider.json`
-  - `NoirServices/HiMovies/himovies.json`
+Pass multiple `--modules` paths only for manifests that actually changed. Omit `--modules` only when you intend the script default list (see `release_esign.py`).
+
+What `--bump` updates:
+- `repo.json` app `version` / `versionDate` / `versionDescription` / `size`
+- `repo.json` latest `versions[0]` (same fields + `size`)
+- Each module JSON listed in `--modules`: `version` **+0.0.1**
+
+**Module-only drop (no new app):** do **not** run `--bump`. Commit the new or updated `NoirServices/...` files only.
 
 ## Validate Before Push
 1. Build check:
    - `xcodebuild -project Noir.xcodeproj -scheme Noir -configuration Debug -destination "generic/platform=iOS" -quiet build`
 2. Release check:
    - `xcodebuild -project Noir.xcodeproj -scheme Noir -configuration Release -destination "generic/platform=iOS" -quiet build`
-3. Confirm `repo.json` version equals IPA release version.
+3. If you shipped an IPA: confirm `repo.json` version equals IPA `CFBundleShortVersionString`.
 4. Confirm module `scriptUrl` values point to:
    - `https://raw.githubusercontent.com/Talaxin/Noir/main/NoirServices/...`
 5. Confirm intended changed files via:
@@ -96,6 +102,6 @@ What this updates:
   - `https://raw.githubusercontent.com/Talaxin/Noir/main/NoirServices/HiMovies/himovies.json`
 
 ## Agent Hand-off Notes
-- If release metadata and IPA version ever mismatch, rebuild IPA and rerun `release_esign.py --bump`.
+- If release metadata and IPA version ever mismatch, rebuild IPA and rerun `release_esign.py` (with correct `--modules` scope).
 - Do not switch to other repositories.
 - If a command needs elevated permissions, ask user once and then continue with sudo as approved.

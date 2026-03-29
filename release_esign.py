@@ -2,9 +2,17 @@
 """
 Update eSign/AltStore-style repo metadata for Noir releases.
 
+Only bump versions for artifacts you actually changed. Do not bump unrelated
+module manifests or the app/repo unless that release includes those changes.
+
 Usage examples:
   python3 release_esign.py --description "Subtitle stability fixes."
   python3 release_esign.py --bump --description "New app build."
+  python3 release_esign.py --bump --modules NoirServices/Foo/foo.json --description "Only foo module changed."
+
+New module manifests should ship at version 1.0.0; omit them from --modules
+when using --bump until that module’s script/manifest is part of a release that
+should increment its version.
 """
 
 from __future__ import annotations
@@ -22,7 +30,6 @@ DEFAULT_MODULES = [
     "NoirServices/Miruro/miruro.json",
     "NoirServices/AnimeKai/animekai.json",
     "NoirServices/TokyoInsider/tokyoinsider.json",
-    "NoirServices/HiMovies/himovies.json",
 ]
 
 
@@ -95,7 +102,11 @@ def main() -> int:
         "--modules",
         nargs="*",
         default=DEFAULT_MODULES,
-        help="Module manifest JSON paths to bump when --bump is used.",
+        help=(
+            "Module manifest JSON paths to bump (+0.0.1) when --bump is used. "
+            "List only manifests you changed; do not include unchanged or brand-new "
+            "1.0.0 modules unless you intend to bump them."
+        ),
     )
     parser.add_argument(
         "--dry-run",
